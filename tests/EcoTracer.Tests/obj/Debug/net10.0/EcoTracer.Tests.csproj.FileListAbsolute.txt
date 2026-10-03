@@ -101,3 +101,4 @@ C:\Users\gmayc\EcoTracer\tests\EcoTracer.Tests\obj\Debug\net10.0\refint\EcoTrace
 C:\Users\gmayc\EcoTracer\tests\EcoTracer.Tests\obj\Debug\net10.0\EcoTracer.Tests.pdb
 C:\Users\gmayc\EcoTracer\tests\EcoTracer.Tests\obj\Debug\net10.0\EcoTracer.Tests.genruntimeconfig.cache
 C:\Users\gmayc\EcoTracer\tests\EcoTracer.Tests\obj\Debug\net10.0\ref\EcoTracer.Tests.dll
+C:\Users\gmayc\EcoTracer\tests\EcoTracer.Tests\obj\Debug\net10.0\EcoTracer.Tests.sourcelink.json
