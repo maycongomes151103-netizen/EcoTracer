@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/EcoTracer.Core/EcoTracer.Core.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/EcoTracer.Tests/EcoTracer.Tests.csproj" />
+  </Folder>
+</Solution>
