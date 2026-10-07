@@ -12,8 +12,8 @@ namespace EcoTracer.App
         {
             { "Carro a gasolina", ModoTransporte.CarroGasolina },
             { "Moto", ModoTransporte.Moto },
-            { "Onibus", ModoTransporte.Onibus },
-            { "Metro", ModoTransporte.Metro },
+            { "Ônibus", ModoTransporte.Onibus },
+            { "Metrô", ModoTransporte.Metro },
             { "Bicicleta/Caminhada", ModoTransporte.BicicletaCaminhada },
         };
 
@@ -24,25 +24,30 @@ namespace EcoTracer.App
             comboTransporte.SelectedIndex = 0;
         }
 
+                private (double distancia, int dias, ModoTransporte transporte) LerFormulario()
+        {
+            double distancia = double.Parse(txtDistancia.Text.Replace(",", "."));
+            int dias = int.Parse(txtDias.Text);
+            ModoTransporte transporte = TransportesLabels[comboTransporte.SelectedItem!.ToString()!];
+            return (distancia, dias, transporte);
+        }
+
         private void btnCalcular_Click(object sender, EventArgs e)
         {
             try
             {
-                double distancia = double.Parse(txtDistancia.Text.Replace(",", "."));
-                int dias = int.Parse(txtDias.Text);
-                ModoTransporte transporte = TransportesLabels[comboTransporte.SelectedItem!.ToString()!];
-
+                var (distancia, dias, transporte) = LerFormulario();
                 var resultado = _calculadora.Calcular(distancia, transporte, dias);
 
                 lblResultado.Text =
-                    $"Emissao diaria: {resultado.Co2DiarioKg} kg de CO2\n" +
-                    $"Emissao anual: {resultado.Co2AnualKg} kg de CO2\n" +
-                    $"Equivalente a {resultado.ArvoresNecessariasAnual} arvores/ano para compensar";
+                    $"Emissão diária: {resultado.Co2DiarioKg} kg de CO2\n" +
+                    $"Emissão anual: {resultado.Co2AnualKg} kg de CO2\n" +
+                    $"Equivalente a {resultado.ArvoresNecessariasAnual} árvores/ano  para compensar";
                 lblResultado.ForeColor = Color.FromArgb(27, 94, 32);
             }
             catch (FormatException)
             {
-                MessageBox.Show("Digite numeros validos para distancia e dias.", "Erro",
+                MessageBox.Show("Digite números válidos para distância e dias.", "Erro",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             catch (EntradaInvalidaException ex)
