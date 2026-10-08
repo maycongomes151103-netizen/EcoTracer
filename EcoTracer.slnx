@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/src/">
+    <Project Path="src/EcoTracer.App/EcoTracer.App.csproj" />
     <Project Path="src/EcoTracer.Core/EcoTracer.Core.csproj" />
   </Folder>
   <Folder Name="/tests/">
