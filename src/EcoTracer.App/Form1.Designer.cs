@@ -49,12 +49,12 @@
             lblTitulo.Location = new Point(24, 20);
             lblTitulo.AutoSize = true;
 
-            lblOds.Text = "ODS 13 - Acao Contra a Mudanca Global do Clima";
+            lblOds.Text = "ODS 13 - Ação Contra a Mudança Global do Clima";
             lblOds.Font = new Font("Segoe UI", 9);
             lblOds.Location = new Point(24, 52);
             lblOds.AutoSize = true;
 
-            lblCampoDistancia.Text = "Distancia diaria (km)";
+            lblCampoDistancia.Text = "Distância diária (km)";
             lblCampoDistancia.Location = new Point(24, 92);
             lblCampoDistancia.AutoSize = true;
 
