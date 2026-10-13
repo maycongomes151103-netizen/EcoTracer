@@ -15,6 +15,7 @@ O **EcoTracer** calcula a emissão de CO₂ gerada pelo deslocamento diário de 
 ## 🏗️ Arquitetura do Sistema
 
 EcoTracer/
+
 ├── EcoTracer.slnx
 ├── .gitignore
 ├── README.md
@@ -92,4 +93,6 @@ Este repositório segue o padrão Git Flow: `main` (estável), `develop` (integr
 
 ## 🎓 Trabalho acadêmico
 
+
 Projeto desenvolvido para a disciplina de Gestão e Qualidade de Software (GQS), UNA, sob orientação do professor Daniel Henrique Matos de Paiva.
+
