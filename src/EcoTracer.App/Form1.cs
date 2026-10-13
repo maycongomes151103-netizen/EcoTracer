@@ -1,13 +1,15 @@
 using EcoTracer.Core.Exceptions;
 using EcoTracer.Core.Models;
 using EcoTracer.Core.Services;
+using EcoTracer.Core.Data;
 
 namespace EcoTracer.App
 {
     public partial class Form1 : Form
     {
         private readonly CalculadoraEcoTracer _calculadora = new();
-
+        private readonly HistoricoService _historicoService = new(new AppDatabase());
+        private readonly Usuario _usuarioLogado;
         private static readonly Dictionary<string, ModoTransporte> TransportesLabels = new()
         {
             { "Carro a gasolina", ModoTransporte.CarroGasolina },
@@ -17,13 +19,13 @@ namespace EcoTracer.App
             { "Bicicleta/Caminhada", ModoTransporte.BicicletaCaminhada },
         };
 
-        public Form1()
+        public Form1(Usuario usuarioLogado)
         {
             InitializeComponent();
             comboTransporte.Items.AddRange(TransportesLabels.Keys.ToArray());
             comboTransporte.SelectedIndex = 0;
+            _usuarioLogado = usuarioLogado;
         }
-
                 private (double distancia, int dias, ModoTransporte transporte) LerFormulario()
         {
             double distancia = double.Parse(txtDistancia.Text.Replace(",", "."));
@@ -38,6 +40,7 @@ namespace EcoTracer.App
             {
                 var (distancia, dias, transporte) = LerFormulario();
                 var resultado = _calculadora.Calcular(distancia, transporte, dias);
+                _historicoService.Salvar(_usuarioLogado.Id, distancia, transporte, dias, resultado);
 
                 lblResultado.Text =
                     $"Emissão diária: {resultado.Co2DiarioKg} kg de CO2\n" +
