@@ -15,25 +15,26 @@ O **EcoTracer** calcula a emissão de CO₂ gerada pelo deslocamento diário de 
 ## 🏗️ Arquitetura do Sistema
 
 EcoTracer/
-├── EcoTracer.slnx           
-├── .gitignore       
-├── README.md             
-├── docs/            
-│ └── fatores-emissao.md # Fontes e metodologia dos fatores de emissão           
-├── .github/         
-│ └── workflows/             
-│ └── ci.yml # Pipeline de build e testes (GitHub Actions)          
-├── src/           
-│ ├── EcoTracer.Core/ # Biblioteca de regras de negócio           
-│ │ ├── Models.cs # Entidades e enum (ModoTransporte, ResultadoImpacto)           
-│ │ ├── Services.cs # CalculadoraEcoTracer — lógica de cálculo         
-│ │ └── Exceptions.cs # Exceções customizadas de validação         
-│ └── EcoTracer.App/ # Interface gráfica (Windows Forms)           
-│ ├── Form1.cs     
-│ └── Form1.Designer.cs        
-└── tests/         
-└── EcoTracer.Tests/         
-└── UnitTest1.cs # 8 testes unitários (xUnit)         
+
+├── EcoTracer.slnx
+├── .gitignore
+├── README.md
+├── docs/
+│ └── fatores-emissao.md # Fontes e metodologia dos fatores de emissão
+├── .github/
+│ └── workflows/
+│ └── ci.yml # Pipeline de build e testes (GitHub Actions)
+├── src/
+│ ├── EcoTracer.Core/ # Biblioteca de regras de negócio
+│ │ ├── Models.cs # Entidades e enum (ModoTransporte, ResultadoImpacto)
+│ │ ├── Services.cs # CalculadoraEcoTracer — lógica de cálculo
+│ │ └── Exceptions.cs # Exceções customizadas de validação
+│ └── EcoTracer.App/ # Interface gráfica (Windows Forms)
+│ ├── Form1.cs
+│ └── Form1.Designer.cs
+└── tests/
+└── EcoTracer.Tests/
+└── UnitTest1.cs # 8 testes unitários (xUnit)
 
 ---
 
@@ -92,4 +93,6 @@ Este repositório segue o padrão Git Flow: `main` (estável), `develop` (integr
 
 ## 🎓 Trabalho acadêmico
 
+
 Projeto desenvolvido para a disciplina de Gestão e Qualidade de Software (GQS), UNA, sob orientação do professor Daniel Henrique Matos de Paiva.
+
