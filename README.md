@@ -16,6 +16,7 @@ Aplicação desktop em C# (.NET 10) que calcula a emissão de CO2 gerada pelo de
 
 Fatores de emissão e fontes detalhadas em [docs/fatores-emissao.md](docs/fatores-emissao.md). Estrutura do banco de dados em [docs/modelo-dados.md](docs/modelo-dados.md).
 
+
 ## Tecnologias
 
 - C# / .NET 10
@@ -84,4 +85,6 @@ Este repositório segue o padrão Git Flow: main (estável), develop (integraç�
 
 ## Trabalho acadêmico
 
+
 Projeto desenvolvido para a disciplina de Gestão e Qualidade de Software (GQS), UNA, sob orientação do professor Daniel Henrique Matos de Paiva.
+
