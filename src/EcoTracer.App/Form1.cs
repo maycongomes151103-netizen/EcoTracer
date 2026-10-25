@@ -25,8 +25,27 @@ namespace EcoTracer.App
             comboTransporte.Items.AddRange(TransportesLabels.Keys.ToArray());
             comboTransporte.SelectedIndex = 0;
             _usuarioLogado = usuarioLogado;
+            ConfigurarBotaoHistorico();
         }
-                private (double distancia, int dias, ModoTransporte transporte) LerFormulario()
+
+        private void ConfigurarBotaoHistorico()
+        {
+            var btnHistorico = new Button
+            {
+                Text = "Meu Histórico",
+                Location = new Point(this.ClientSize.Width - 160, 15),
+                Size = new Size(140, 35),
+                Anchor = AnchorStyles.Top | AnchorStyles.Right
+            };
+            btnHistorico.Click += (s, e) =>
+            {
+                var formHistorico = new FormHistorico(_usuarioLogado, _historicoService);
+                formHistorico.ShowDialog();
+            };
+            this.Controls.Add(btnHistorico);
+        }
+
+        private (double distancia, int dias, ModoTransporte transporte) LerFormulario()
         {
             double distancia = double.Parse(txtDistancia.Text.Replace(",", "."));
             int dias = int.Parse(txtDias.Text);

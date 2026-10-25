@@ -1,6 +1,9 @@
+using System;
+using System.IO;
 using EcoTracer.Core.Data;
 using EcoTracer.Core.Exceptions;
 using EcoTracer.Core.Services;
+using Microsoft.Data.Sqlite;
 using Xunit;
 
 namespace EcoTracer.Tests
@@ -22,6 +25,8 @@ namespace EcoTracer.Tests
 
         public void Dispose()
         {
+            SqliteConnection.ClearAllPools();
+
             try
             {
                 if (File.Exists(_caminhoDb))
@@ -29,7 +34,7 @@ namespace EcoTracer.Tests
             }
             catch
             {
-                
+
             }
         }
 

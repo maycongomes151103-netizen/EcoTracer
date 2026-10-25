@@ -1,20 +1,22 @@
+using System;
+using System.IO;
 using EcoTracer.Core.Data;
 using EcoTracer.Core.Models;
 using EcoTracer.Core.Services;
+using Microsoft.Data.Sqlite;
 using Xunit;
 
 namespace EcoTracer.Tests
 {
     public class HistoricoServiceTests : IDisposable
     {
-        private readonly string _caminhoDb = "teste_historico.db";
+        private readonly string _caminhoDb;
         private readonly HistoricoService _historicoService;
         private readonly UsuarioService _usuarioService;
 
         public HistoricoServiceTests()
         {
-            if (File.Exists(_caminhoDb))
-                File.Delete(_caminhoDb);
+            _caminhoDb = Path.Combine(Path.GetTempPath(), $"teste_historico_{Guid.NewGuid()}.db");
 
             var db = new AppDatabase(_caminhoDb);
             db.Inicializar();
@@ -24,6 +26,7 @@ namespace EcoTracer.Tests
 
         public void Dispose()
         {
+            SqliteConnection.ClearAllPools();
             if (File.Exists(_caminhoDb))
                 File.Delete(_caminhoDb);
         }
