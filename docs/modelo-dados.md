@@ -1,8 +1,8 @@
 # Modelo de dados
 
-O EcoTracer usa SQLite (arquivo local ecotracer.db, gerado na primeira execução, não versionado) para persistir usuários e histórico de cálculos.
+O EcoTracer usa SQLite (arquivo local ecotracer.db, gerado na primeira execução, não versionado) para persistir usuários e histórico de cálculos.)
 
-## Tabela Usuarios
+## Tabela Usuarios 
 
 | Coluna | Tipo | Descrição |
 |---|---|---|
