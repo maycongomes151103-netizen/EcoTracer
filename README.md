@@ -1,23 +1,24 @@
-# EcoTracer
+# EcoTracer 🌳🚗
 
 Aplicação desktop em C# (.NET 10) que calcula a emissão de CO2 gerada pelo deslocamento diário de uma pessoa, convertendo o total anual em número equivalente de árvores necessárias para compensar essa emissão.
 
-## ODS relacionada
+## ♻️ ODS relacionada 
 
-*ODS 13 — Ação Contra a Mudança Global do Clima*, meta 13.3 (educação e conscientização sobre mudança do clima).
+ODS 13 — Ação Contra a Mudança Global do Clima, meta 13.3 (educação e conscientização sobre mudança do clima).
 
-## Funcionalidades
+## ⚙️ Funcionalidades 
 
 - Cadastro e login de usuário (senha armazenada com hash, nunca em texto puro)
 - Cálculo de emissão diária e anual de CO2, a partir da distância, meio de transporte e frequência semanal
 - Conversão do CO2 anual em número de árvores equivalentes
 - Histórico de cálculos salvo por usuário, persistido em banco local (SQLite)
+- Tela "Meu Histórico", que lista todos os cálculos já feitos pelo usuário logado (data, distância, transporte, dias por semana, CO2 anual e árvores equivalentes)
 - Tratamento de erros para entradas inválidas
 
 Fatores de emissão e fontes detalhadas em [docs/fatores-emissao.md](docs/fatores-emissao.md). Estrutura do banco de dados em [docs/modelo-dados.md](docs/modelo-dados.md).
 
 
-## Tecnologias
+## 🖥️ Tecnologias 
 
 - C# / .NET 10
 - Windows Forms (interface gráfica)
@@ -26,7 +27,7 @@ Fatores de emissão e fontes detalhadas em [docs/fatores-emissao.md](docs/fatore
 - xUnit (testes unitários)
 - GitHub Actions (integração contínua)
 
-## Arquitetura
+## 🧱 Arquitetura 
 
 EcoTracer/
 ├── EcoTracer.slnx  
@@ -49,6 +50,7 @@ EcoTracer/
 │ ├── Program.cs  
 │ ├── FormLogin.cs  
 │ ├── FormCadastro.cs  
+│ ├── FormHistorico.cs  
 │ ├── Form1.cs  
 │ └── respectivos .Designer.cs  
 └── tests/  
@@ -58,7 +60,7 @@ EcoTracer/
 └── HistoricoServiceTests.cs  
 
 
-## Como instalar e rodar
+## 🚀 Como instalar e rodar 
 
 git clone https://github.com/maycongomes151103-netizen/EcoTracer.git
 cd EcoTracer
@@ -66,25 +68,24 @@ dotnet build EcoTracer.slnx
 dotnet run --project src/EcoTracer.App
 
 
-Na primeira vez que rodar, crie uma conta pelo link "Criar conta" na tela de login.
+Na primeira vez que rodar, crie uma conta pelo link "Criar conta" na tela de login. Depois de logado, os cálculos feitos na tela principal ficam disponíveis em "Meu Histórico", no canto superior direito da janela.
 
-## Como rodar os testes
+## 🧪 Como rodar os testes  
 
 dotnet test EcoTracer.slnx
 
 
-## Fluxo de branches
+## 🌿 Fluxo de branches  
 
 Este repositório segue o padrão Git Flow: main (estável), develop (integração) e feature/equipe (desenvolvimento conjunto).
 
-## Integrantes
+## 👥 Integrantes 👥
 
 - Anna Vitória Rocha Dias — RA: 325118421 — Dev Backend / Core 
 - Maycon Gomes — RA: 325125878 — QA / Testes Unitários 
 - Karolyne Silva — RA: 32517941 — Documentação e DevOps / Versionamento 
 
-## Trabalho acadêmico
+## 🎓 Trabalho acadêmico
 
 
 Projeto desenvolvido para a disciplina de Gestão e Qualidade de Software (GQS), UNA, sob orientação do professor Daniel Henrique Matos de Paiva.
-
