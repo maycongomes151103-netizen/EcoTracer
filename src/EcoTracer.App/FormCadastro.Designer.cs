@@ -24,6 +24,7 @@ namespace EcoTracer.App
         private TextBox txtConfirmarSenha;
         private Button btnCadastrar;
         private Label lblMensagem;
+        private Button btnFechar;
 
         private void InitializeComponent()
         {
@@ -38,6 +39,7 @@ namespace EcoTracer.App
             txtConfirmarSenha = new TextBox();
             btnCadastrar = new Button();
             lblMensagem = new Label();
+            btnFechar = new Button();
             SuspendLayout();
 
             lblTitulo.Text = "Criar conta";
@@ -88,9 +90,14 @@ namespace EcoTracer.App
             lblMensagem.Location = new Point(40, 365);
             lblMensagem.Size = new Size(300, 40);
 
+            btnFechar.Text = "Fechar";
+            btnFechar.Location = new Point(240, 420);
+            btnFechar.Size = new Size(100, 35);
+            btnFechar.Click += btnFechar_Click;
+
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(384, 420);
+            ClientSize = new Size(384, 480);
             Controls.Add(lblTitulo);
             Controls.Add(lblNome);
             Controls.Add(txtNome);
@@ -102,6 +109,7 @@ namespace EcoTracer.App
             Controls.Add(txtConfirmarSenha);
             Controls.Add(btnCadastrar);
             Controls.Add(lblMensagem);
+            Controls.Add(btnFechar);
             Text = "EcoTracer - Criar conta";
             FormBorderStyle = FormBorderStyle.FixedSingle;
             MaximizeBox = false;
