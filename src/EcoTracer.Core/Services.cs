@@ -2,6 +2,7 @@ using EcoTracer.Core.Exceptions;
 using EcoTracer.Core.Models;
 using EcoTracer.Core.Data;
 using BCrypt.Net;
+using System.Globalization;
 
 namespace EcoTracer.Core.Services
 {
@@ -185,6 +186,27 @@ namespace EcoTracer.Core.Services
             }
 
             return lista;
+        }
+    }
+        public static class ConversorEntrada
+    {
+        // Aceita virgula ou ponto como separador decimal e sempre interpreta com cultura invariante,
+        // para nao depender da configuracao regional do Windows (em pt-BR o ponto e separador de milhar).
+        public static double LerDistancia(string? texto)
+        {
+            if (string.IsNullOrWhiteSpace(texto))
+                throw new FormatException("Distancia nao informada.");
+
+            var normalizado = texto.Trim().Replace(',', '.');
+            return double.Parse(normalizado, NumberStyles.Float, CultureInfo.InvariantCulture);
+        }
+
+        public static int LerDias(string? texto)
+        {
+            if (string.IsNullOrWhiteSpace(texto))
+                throw new FormatException("Dias por semana nao informado.");
+
+            return int.Parse(texto.Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture);
         }
     }
 }
