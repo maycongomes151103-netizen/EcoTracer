@@ -57,7 +57,7 @@ namespace EcoTracer.Core.Services
             };
         }
     }
-        public class UsuarioService
+            public class UsuarioService
     {
         private readonly AppDatabase _db;
 
@@ -68,11 +68,22 @@ namespace EcoTracer.Core.Services
 
         public Usuario Cadastrar(string nome, string email, string senha)
         {
+            if (string.IsNullOrWhiteSpace(nome) ||
+                string.IsNullOrWhiteSpace(email) ||
+                string.IsNullOrWhiteSpace(senha))
+            {
+                throw new EntradaInvalidaException("Preencha nome, email e senha.");
+            }
+
+            nome = nome.Trim();
+            email = email.Trim();
+
             using var conexao = _db.CriarConexao();
             conexao.Open();
 
+            // COLLATE NOCASE: "Ana@x.com" e "ana@x.com" contam como o mesmo e-mail.
             var verifica = conexao.CreateCommand();
-            verifica.CommandText = "SELECT COUNT(*) FROM Usuarios WHERE Email = $email";
+            verifica.CommandText = "SELECT COUNT(*) FROM Usuarios WHERE Email = $email COLLATE NOCASE";
             verifica.Parameters.AddWithValue("$email", email);
             var existe = (long)verifica.ExecuteScalar()! > 0;
 
@@ -97,11 +108,16 @@ namespace EcoTracer.Core.Services
 
         public Usuario Autenticar(string email, string senha)
         {
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrEmpty(senha))
+                throw new CredenciaisInvalidasException("Email ou senha incorretos.");
+
+            email = email.Trim();
+
             using var conexao = _db.CriarConexao();
             conexao.Open();
 
             var busca = conexao.CreateCommand();
-            busca.CommandText = "SELECT Id, Nome, Email, SenhaHash FROM Usuarios WHERE Email = $email";
+            busca.CommandText = "SELECT Id, Nome, Email, SenhaHash FROM Usuarios WHERE Email = $email COLLATE NOCASE";
             busca.Parameters.AddWithValue("$email", email);
 
             using var leitor = busca.ExecuteReader();
