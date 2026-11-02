@@ -22,7 +22,7 @@ namespace EcoTracer.Core.Services
 
         private void Validar(double distanciaDiariaKm, int diasPorSemana)
         {
-            if (distanciaDiariaKm <= 0)
+            if (double.IsNaN(distanciaDiariaKm) || double.IsInfinity(distanciaDiariaKm) || distanciaDiariaKm <= 0)
             {
                 throw new DistanciaInvalidaException(
                     $"Distancia deve ser maior que zero, recebido: {distanciaDiariaKm}");
@@ -39,7 +39,11 @@ namespace EcoTracer.Core.Services
         {
             Validar(distanciaDiariaKm, diasPorSemana);
 
-            double fator = FatoresEmissaoKgKm[modo];
+            if (!FatoresEmissaoKgKm.TryGetValue(modo, out double fator))
+            {
+                throw new EntradaInvalidaException($"Meio de transporte invalido: {modo}");
+            }
+
             double co2Diario = distanciaDiariaKm * fator;
             double co2Anual = co2Diario * diasPorSemana * SemanasPorAno;
             int arvores = (int)Math.Ceiling(co2Anual / AbsorcaoArvoreKgAno);
