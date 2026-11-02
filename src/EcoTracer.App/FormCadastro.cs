@@ -37,7 +37,7 @@ namespace EcoTracer.App
                 lblMensagem.ForeColor = Color.FromArgb(27, 94, 32);
                 lblMensagem.Text = "Conta criada! Você já pode fazer login.";
             }
-            catch (EmailJaCadastradoException ex)
+            catch (EntradaInvalidaException ex)
             {
                 lblMensagem.ForeColor = Color.Firebrick;
                 lblMensagem.Text = ex.Message;
