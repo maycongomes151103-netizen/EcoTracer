@@ -8,11 +8,12 @@ ODS 13 — Ação Contra a Mudança Global do Clima, meta 13.3 (educação e con
 
 ## ⚙️ Funcionalidades 
 
-- Cadastro e login de usuário (senha armazenada com hash, nunca em texto puro)
+- Cadastro e login de usuário (senha armazenada com hash, nunca em texto puro; e-mail sem diferenciar maiúsculas de minúsculas)
 - Cálculo de emissão diária e anual de CO2, a partir da distância, meio de transporte e frequência semanal
 - Conversão do CO2 anual em número de árvores equivalentes
 - Histórico de cálculos salvo por usuário, persistido em banco local (SQLite)
 - Tela "Meu Histórico", que lista todos os cálculos já feitos pelo usuário logado (data, distância, transporte, dias por semana, CO2 anual e árvores equivalentes)
+- Distância aceita vírgula ou ponto como separador decimal (`20,5` ou `20.5`)
 - Tratamento de erros para entradas inválidas
 
 Fatores de emissão e fontes detalhadas em [docs/fatores-emissao.md](docs/fatores-emissao.md). Estrutura do banco de dados em [docs/modelo-dados.md](docs/modelo-dados.md).
@@ -29,50 +30,69 @@ Fatores de emissão e fontes detalhadas em [docs/fatores-emissao.md](docs/fatore
 
 ## 🧱 Arquitetura 
 
+```
 EcoTracer/
 ├── EcoTracer.slnx  
 ├── .gitignore  
 ├── README.md  
 ├── docs/  
-│ ├── fatores-emissao.md  
-│ └── modelo-dados.md  
+│   ├── fatores-emissao.md  
+│   └── modelo-dados.md  
 ├── .github/  
-│ └── workflows/  
-│ └── ci.yml  
+│   └── workflows/  
+│       └── ci.yml  
 ├── src/  
-│ ├── EcoTracer.Core/  
-│ │ ├── Data/  
-│ │ │ └── AppDatabase.cs  
-│ │ ├── Models.cs  
-│ │ ├── Services.cs  
-│ │ └── Exceptions.cs  
-│ └── EcoTracer.App/  
-│ ├── Program.cs  
-│ ├── FormLogin.cs  
-│ ├── FormCadastro.cs  
-│ ├── FormHistorico.cs  
-│ ├── Form1.cs  
-│ └── respectivos .Designer.cs  
+│   ├── EcoTracer.Core/  
+│   │   ├── Data/  
+│   │   │   └── AppDatabase.cs  
+│   │   ├── Models.cs  
+│   │   ├── Services.cs  
+│   │   └── Exceptions.cs  
+│   └── EcoTracer.App/  
+│       ├── Program.cs  
+│       ├── FormLogin.cs  
+│       ├── FormCadastro.cs  
+│       ├── FormHistorico.cs  
+│       ├── Form1.cs  
+│       └── respectivos .Designer.cs  
 └── tests/  
-└── EcoTracer.Tests/  
-├── CalculadoraEcoTracerTests.cs  
-├── UsuarioServiceTests.cs  
-└── HistoricoServiceTests.cs  
+    └── EcoTracer.Tests/  
+        ├── CalculadoraEcoTracerTests.cs  
+        ├── ConversorEntradaTests.cs  
+        ├── UsuarioServiceTests.cs  
+        ├── HistoricoServiceTests.cs  
+        └── AppDatabaseTests.cs  
+```
 
+`Services.cs` reúne `CalculadoraEcoTracer`, `ConversorEntrada` (converte o texto digitado em número), `UsuarioService` e `HistoricoService`.
 
 ## 🚀 Como instalar e rodar 
 
+```
 git clone https://github.com/maycongomes151103-netizen/EcoTracer.git
 cd EcoTracer
 dotnet build EcoTracer.slnx
 dotnet run --project src/EcoTracer.App
-
+```
 
 Na primeira vez que rodar, crie uma conta pelo link "Criar conta" na tela de login. Depois de logado, os cálculos feitos na tela principal ficam disponíveis em "Meu Histórico", no canto superior direito da janela.
 
 ## 🧪 Como rodar os testes  
 
+```
 dotnet test EcoTracer.slnx
+```
+
+Os testes cobrem os caminhos de sucesso e de erro (79 execuções de teste). Cada teste usa um banco SQLite temporário próprio.
+
+### Cobertura de testes
+
+```
+dotnet test EcoTracer.slnx --collect:"XPlat Code Coverage"
+reportgenerator -reports:"tests\EcoTracer.Tests\TestResults\*\coverage.cobertura.xml" -targetdir:"coverage-report" -reporttypes:"TextSummary;Html"
+```
+
+O resumo fica em `coverage-report/Summary.txt` e o relatório detalhado em `coverage-report/index.html`. Resultado atual no `EcoTracer.Core`: 100% das linhas, 100% dos branches e 100% dos métodos. As telas Windows Forms não entram na medição, pois a lógica fica no Core e a interface é validada manualmente. Se o `reportgenerator` não estiver instalado: `dotnet tool install --global dotnet-reportgenerator-globaltool`.
 
 
 ## 🌿 Fluxo de branches  

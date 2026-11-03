@@ -47,8 +47,8 @@ namespace EcoTracer.App
 
         private (double distancia, int dias, ModoTransporte transporte) LerFormulario()
         {
-            double distancia = double.Parse(txtDistancia.Text.Replace(",", "."));
-            int dias = int.Parse(txtDias.Text);
+            double distancia = ConversorEntrada.LerDistancia(txtDistancia.Text);
+            int dias = ConversorEntrada.LerDias(txtDias.Text);
             ModoTransporte transporte = TransportesLabels[comboTransporte.SelectedItem!.ToString()!];
             return (distancia, dias, transporte);
         }
@@ -84,4 +84,4 @@ namespace EcoTracer.App
             }
         }
     }
-}
+} 

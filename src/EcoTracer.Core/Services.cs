@@ -2,6 +2,7 @@ using EcoTracer.Core.Exceptions;
 using EcoTracer.Core.Models;
 using EcoTracer.Core.Data;
 using BCrypt.Net;
+using System.Globalization;
 
 namespace EcoTracer.Core.Services
 {
@@ -22,7 +23,7 @@ namespace EcoTracer.Core.Services
 
         private void Validar(double distanciaDiariaKm, int diasPorSemana)
         {
-            if (distanciaDiariaKm <= 0)
+            if (double.IsNaN(distanciaDiariaKm) || double.IsInfinity(distanciaDiariaKm) || distanciaDiariaKm <= 0)
             {
                 throw new DistanciaInvalidaException(
                     $"Distancia deve ser maior que zero, recebido: {distanciaDiariaKm}");
@@ -39,7 +40,11 @@ namespace EcoTracer.Core.Services
         {
             Validar(distanciaDiariaKm, diasPorSemana);
 
-            double fator = FatoresEmissaoKgKm[modo];
+            if (!FatoresEmissaoKgKm.TryGetValue(modo, out double fator))
+            {
+                throw new EntradaInvalidaException($"Meio de transporte invalido: {modo}");
+            }
+
             double co2Diario = distanciaDiariaKm * fator;
             double co2Anual = co2Diario * diasPorSemana * SemanasPorAno;
             int arvores = (int)Math.Ceiling(co2Anual / AbsorcaoArvoreKgAno);
@@ -52,7 +57,7 @@ namespace EcoTracer.Core.Services
             };
         }
     }
-        public class UsuarioService
+            public class UsuarioService
     {
         private readonly AppDatabase _db;
 
@@ -63,11 +68,22 @@ namespace EcoTracer.Core.Services
 
         public Usuario Cadastrar(string nome, string email, string senha)
         {
+            if (string.IsNullOrWhiteSpace(nome) ||
+                string.IsNullOrWhiteSpace(email) ||
+                string.IsNullOrWhiteSpace(senha))
+            {
+                throw new EntradaInvalidaException("Preencha nome, email e senha.");
+            }
+
+            nome = nome.Trim();
+            email = email.Trim();
+
             using var conexao = _db.CriarConexao();
             conexao.Open();
 
+            // COLLATE NOCASE: "Ana@x.com" e "ana@x.com" contam como o mesmo e-mail.
             var verifica = conexao.CreateCommand();
-            verifica.CommandText = "SELECT COUNT(*) FROM Usuarios WHERE Email = $email";
+            verifica.CommandText = "SELECT COUNT(*) FROM Usuarios WHERE Email = $email COLLATE NOCASE";
             verifica.Parameters.AddWithValue("$email", email);
             var existe = (long)verifica.ExecuteScalar()! > 0;
 
@@ -92,11 +108,16 @@ namespace EcoTracer.Core.Services
 
         public Usuario Autenticar(string email, string senha)
         {
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrEmpty(senha))
+                throw new CredenciaisInvalidasException("Email ou senha incorretos.");
+
+            email = email.Trim();
+
             using var conexao = _db.CriarConexao();
             conexao.Open();
 
             var busca = conexao.CreateCommand();
-            busca.CommandText = "SELECT Id, Nome, Email, SenhaHash FROM Usuarios WHERE Email = $email";
+            busca.CommandText = "SELECT Id, Nome, Email, SenhaHash FROM Usuarios WHERE Email = $email COLLATE NOCASE";
             busca.Parameters.AddWithValue("$email", email);
 
             using var leitor = busca.ExecuteReader();
@@ -181,6 +202,27 @@ namespace EcoTracer.Core.Services
             }
 
             return lista;
+        }
+    }
+        public static class ConversorEntrada
+    {
+        // Aceita virgula ou ponto como separador decimal e sempre interpreta com cultura invariante,
+        // para nao depender da configuracao regional do Windows (em pt-BR o ponto e separador de milhar).
+        public static double LerDistancia(string? texto)
+        {
+            if (string.IsNullOrWhiteSpace(texto))
+                throw new FormatException("Distancia nao informada.");
+
+            var normalizado = texto.Trim().Replace(',', '.');
+            return double.Parse(normalizado, NumberStyles.Float, CultureInfo.InvariantCulture);
+        }
+
+        public static int LerDias(string? texto)
+        {
+            if (string.IsNullOrWhiteSpace(texto))
+                throw new FormatException("Dias por semana nao informado.");
+
+            return int.Parse(texto.Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture);
         }
     }
 }
