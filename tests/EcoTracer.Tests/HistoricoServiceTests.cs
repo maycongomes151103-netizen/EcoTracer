@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Threading;
 using EcoTracer.Core.Data;
 using EcoTracer.Core.Models;
 using EcoTracer.Core.Services;
@@ -30,6 +31,8 @@ namespace EcoTracer.Tests
             if (File.Exists(_caminhoDb))
                 File.Delete(_caminhoDb);
         }
+
+        // ---------- Testes originais ----------
 
         [Fact]
         public void Salvar_CalculoValido_DeveApareceNoHistorico()
@@ -72,6 +75,80 @@ namespace EcoTracer.Tests
             var listaUsuario2 = _historicoService.ListarPorUsuario(usuario2.Id);
 
             Assert.Empty(listaUsuario2);
+        }
+
+        // ---------- Novos ----------
+
+        [Fact]
+        public void Salvar_DeveGuardarTodosOsCamposDoCalculo()
+        {
+            var usuario = _usuarioService.Cadastrar("Teste", "campos@teste.com", "senha123");
+            var resultado = new ResultadoImpacto { Co2DiarioKg = 0.52, Co2AnualKg = 135.2, ArvoresNecessariasAnual = 17 };
+
+            _historicoService.Salvar(usuario.Id, 12.5, ModoTransporte.Moto, 3, resultado);
+
+            var item = Assert.Single(_historicoService.ListarPorUsuario(usuario.Id));
+            Assert.True(item.Id > 0);
+            Assert.Equal(usuario.Id, item.UsuarioId);
+            Assert.Equal(12.5, item.DistanciaDiariaKm);
+            Assert.Equal(ModoTransporte.Moto, item.Modo);
+            Assert.Equal(3, item.DiasPorSemana);
+            Assert.Equal(135.2, item.Co2AnualKg, 2);
+            Assert.Equal(17, item.ArvoresNecessariasAnual);
+            Assert.InRange(item.DataCalculo, DateTime.Now.AddMinutes(-1), DateTime.Now.AddMinutes(1));
+        }
+
+        [Fact]
+        public void Salvar_VariosCalculos_DeveListarTodosDoUsuario()
+        {
+            var usuario = _usuarioService.Cadastrar("Teste", "varios@teste.com", "senha123");
+            var resultado = new ResultadoImpacto { Co2DiarioKg = 1, Co2AnualKg = 100, ArvoresNecessariasAnual = 10 };
+
+            _historicoService.Salvar(usuario.Id, 5, ModoTransporte.Onibus, 5, resultado);
+            _historicoService.Salvar(usuario.Id, 8, ModoTransporte.Metro, 2, resultado);
+            _historicoService.Salvar(usuario.Id, 30, ModoTransporte.CarroGasolina, 7, resultado);
+
+            Assert.Equal(3, _historicoService.ListarPorUsuario(usuario.Id).Count);
+        }
+
+        [Fact]
+        public void ListarPorUsuario_DeveOrdenarDoMaisRecentePrimeiro()
+        {
+            var usuario = _usuarioService.Cadastrar("Teste", "ordem@teste.com", "senha123");
+            var resultado = new ResultadoImpacto { Co2DiarioKg = 1, Co2AnualKg = 100, ArvoresNecessariasAnual = 10 };
+
+            _historicoService.Salvar(usuario.Id, 10, ModoTransporte.Moto, 3, resultado);
+            Thread.Sleep(1100); // a data e gravada com precisao de segundos
+            _historicoService.Salvar(usuario.Id, 20, ModoTransporte.Moto, 3, resultado);
+
+            var lista = _historicoService.ListarPorUsuario(usuario.Id);
+
+            Assert.Equal(20, lista[0].DistanciaDiariaKm);
+            Assert.Equal(10, lista[1].DistanciaDiariaKm);
+        }
+
+        [Theory]
+        [InlineData(ModoTransporte.BicicletaCaminhada)]
+        [InlineData(ModoTransporte.Metro)]
+        [InlineData(ModoTransporte.Onibus)]
+        [InlineData(ModoTransporte.Moto)]
+        [InlineData(ModoTransporte.CarroGasolina)]
+        public void Salvar_CadaMeioDeTransporte_DeveSerRecuperadoCorretamente(ModoTransporte modo)
+        {
+            // O meio e gravado como texto no banco e convertido de volta para o enum na leitura
+            var usuario = _usuarioService.Cadastrar("Teste", "modo@teste.com", "senha123");
+            var resultado = new ResultadoImpacto { Co2DiarioKg = 1, Co2AnualKg = 100, ArvoresNecessariasAnual = 10 };
+
+            _historicoService.Salvar(usuario.Id, 10, modo, 3, resultado);
+
+            var lista = _historicoService.ListarPorUsuario(usuario.Id);
+            Assert.Equal(modo, lista[0].Modo);
+        }
+
+        [Fact]
+        public void ListarPorUsuario_UsuarioInexistente_DeveRetornarListaVazia()
+        {
+            Assert.Empty(_historicoService.ListarPorUsuario(9999));
         }
     }
 }
