@@ -188,5 +188,30 @@ namespace EcoTracer.Tests
             Assert.Equal(cadastrado.Id, autenticado.Id);
             Assert.Equal("Ana Souza", autenticado.Nome);
         }
+                // ---------- Cadastro: formato do e-mail ----------
+
+        [Theory]
+        [InlineData("ana.teste.com")]    // sem @
+        [InlineData("ana@")]             // sem dominio
+        [InlineData("@teste.com")]       // nada antes do @
+        [InlineData("ana@teste")]        // dominio sem ponto
+        [InlineData("ana @teste.com")]   // espaco no meio
+        [InlineData("ana@@teste.com")]   // dois @
+        public void Cadastrar_EmailInvalido_DeveLancarExcecao(string email)
+        {
+            Assert.Throws<EmailInvalidoException>(() =>
+                _service.Cadastrar("Ana", email, "senha123"));
+        }
+
+        [Fact]
+        public void Cadastrar_EmailInvalido_NaoDeveGravarUsuario()
+        {
+            Assert.Throws<EmailInvalidoException>(() =>
+                _service.Cadastrar("Ana", "semarroba.com", "senha123"));
+
+            // se tivesse gravado, o login daria outro erro (senha), e nao "credenciais invalidas" por e-mail inexistente
+            Assert.Throws<CredenciaisInvalidasException>(() =>
+                _service.Autenticar("semarroba.com", "senha123"));
+        }
     }
 }
