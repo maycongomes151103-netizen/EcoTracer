@@ -9,6 +9,7 @@ ODS 13 — Ação Contra a Mudança Global do Clima, meta 13.3 (educação e con
 ## ⚙️ Funcionalidades 
 
 - Cadastro e login de usuário (senha armazenada com hash, nunca em texto puro; e-mail sem diferenciar maiúsculas de minúsculas)
+- Validação do e-mail no cadastro: exige texto antes do `@` e domínio com ponto (`nome@dominio.com`)
 - Cálculo de emissão diária e anual de CO2, a partir da distância, meio de transporte e frequência semanal
 - Conversão do CO2 anual em número de árvores equivalentes
 - Histórico de cálculos salvo por usuário, persistido em banco local (SQLite)
@@ -45,9 +46,15 @@ EcoTracer/
 │   ├── EcoTracer.Core/  
 │   │   ├── Data/  
 │   │   │   └── AppDatabase.cs  
+│   │   ├── Exceptions/  
+│   │   │   ├── EntradaInvalidaException.cs  
+│   │   │   ├── DistanciaInvalidaException.cs  
+│   │   │   ├── DiasInvalidosException.cs  
+│   │   │   ├── EmailInvalidoException.cs  
+│   │   │   ├── CredenciaisInvalidasException.cs  
+│   │   │   └── EmailJaCadastradoException.cs  
 │   │   ├── Models.cs  
-│   │   ├── Services.cs  
-│   │   └── Exceptions.cs  
+│   │   └── Services.cs  
 │   └── EcoTracer.App/  
 │       ├── Program.cs  
 │       ├── FormLogin.cs  
@@ -64,7 +71,7 @@ EcoTracer/
         └── AppDatabaseTests.cs  
 ```
 
-`Services.cs` reúne `CalculadoraEcoTracer`, `ConversorEntrada` (converte o texto digitado em número), `UsuarioService` e `HistoricoService`.
+`Services.cs` reúne `CalculadoraEcoTracer`, `ConversorEntrada` (converte o texto digitado em número), `UsuarioService` e `HistoricoService`. Cada exceção customizada fica em um arquivo próprio na pasta `Exceptions/`.
 
 ## 🚀 Como instalar e rodar 
 
@@ -83,7 +90,7 @@ Na primeira vez que rodar, crie uma conta pelo link "Criar conta" na tela de log
 dotnet test EcoTracer.slnx
 ```
 
-Os testes cobrem os caminhos de sucesso e de erro (79 execuções de teste). Cada teste usa um banco SQLite temporário próprio.
+Os testes cobrem os caminhos de sucesso e de erro (86 execuções de teste). Cada teste usa um banco SQLite temporário próprio.
 
 ### Cobertura de testes
 

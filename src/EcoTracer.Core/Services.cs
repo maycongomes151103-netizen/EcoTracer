@@ -3,6 +3,7 @@ using EcoTracer.Core.Models;
 using EcoTracer.Core.Data;
 using BCrypt.Net;
 using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace EcoTracer.Core.Services
 {
@@ -68,20 +69,18 @@ namespace EcoTracer.Core.Services
 
         public Usuario Cadastrar(string nome, string email, string senha)
         {
-            if (string.IsNullOrWhiteSpace(nome) ||
-                string.IsNullOrWhiteSpace(email) ||
-                string.IsNullOrWhiteSpace(senha))
-            {
+            if (string.IsNullOrWhiteSpace(nome) || string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(senha))
                 throw new EntradaInvalidaException("Preencha nome, email e senha.");
-            }
 
             nome = nome.Trim();
             email = email.Trim();
 
+            if (!EmailValido(email))
+                throw new EmailInvalidoException("Informe um e-mail válido, com @ e domínio (ex.: nome@dominio.com).");
+
             using var conexao = _db.CriarConexao();
             conexao.Open();
 
-            // COLLATE NOCASE: "Ana@x.com" e "ana@x.com" contam como o mesmo e-mail.
             var verifica = conexao.CreateCommand();
             verifica.CommandText = "SELECT COUNT(*) FROM Usuarios WHERE Email = $email COLLATE NOCASE";
             verifica.Parameters.AddWithValue("$email", email);
@@ -106,6 +105,12 @@ namespace EcoTracer.Core.Services
             return new Usuario { Id = (int)novoId, Nome = nome, Email = email, SenhaHash = senhaHash };
         }
 
+        private static bool EmailValido(string email)
+        {
+            // texto antes do @, um unico @, e dominio com ponto; sem espacos
+            return Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$");
+        }
+        
         public Usuario Autenticar(string email, string senha)
         {
             if (string.IsNullOrWhiteSpace(email) || string.IsNullOrEmpty(senha))
